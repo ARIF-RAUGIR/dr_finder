@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Find Hospitals{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/hospitals.css' %}">
+{% endblock %}
+
+{% block content %}
+
+{% if emergency_only %}
+<section class="py-5 text-center text-white" style="background: linear-gradient(135deg, #dc3545, #b02a37);">
+  <div class="container">
+    <i class="fa-solid fa-triangle-exclamation mb-3" style="font-size: 50px;"></i>
+    <h1 class="fw-bold">Medical Emergency?</h1>
+    <p class="lead opacity-75 mb-4">Call the national emergency number immediately</p>
+    <a href="tel:999" class="btn btn-light btn-lg fw-bold px-5 py-3 rounded-pill shadow">
+      <i class="fa-solid fa-phone me-2"></i> Call 999 Now
+    </a>
+  </div>
+</section>
+{% else %}
+<section class="hospital-header">
+  <div class="container">
+    <h1 class="fw-bold">Find Nearby Hospitals</h1>
+    <p class="opacity-75">Quickly locate the best healthcare facilities in your area</p>
+  </div>
+</section>
+{% endif %}
+
+<div class="container">
+  <div class="search-box-wrap">
+    <form method="get">
+      {% if emergency_only %}<input type="hidden" name="emergency" value="1">{% endif %}
+      <div class="input-group">
+        <span class="input-group-text bg-white border-0"><i class="fa-solid fa-location-crosshairs text-primary"></i></span>
+        <input type="text" name="location" class="form-control border-0 shadow-none"
+               placeholder="Enter your location (e.g. Dhanmondi, Dhaka)" value="{{ selected_location|default:'' }}">
+        <button type="submit" class="btn btn-primary rounded-pill px-4 ms-2">Find Hospitals</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<main class="container my-5 py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <h4 class="fw-bold mb-0">
+      {% if emergency_only %}Emergency-Ready Hospitals{% else %}Top Hospitals{% endif %}
+    </h4>
+    <div class="d-flex align-items-center gap-3">
+      <span class="text-muted small">{{ hospital_list|length }} Hospitals Found</span>
+
+      {% if emergency_only %}
+        <a href="?{% if selected_location %}location={{ selected_location }}{% endif %}" class="btn btn-outline-secondary btn-sm rounded-pill">
+          Clear Emergency Filter
+        </a>
+      {% else %}
+        <a href="?emergency=1{% if selected_location %}&location={{ selected_location }}{% endif %}" class="btn btn-danger btn-sm rounded-pill fw-bold">
+          <i class="fa-solid fa-triangle-exclamation me-1"></i> 999 Emergency
+        </a>
+      {% endif %}
+
+      <button type="button" id="use-location-btn" class="btn btn-outline-danger btn-sm rounded-pill">
+        <i class="fa-solid fa-location-crosshairs me-1"></i> Find Nearest to Me
+      </button>
+    </div>
+  </div>
+
+  <div id="location-status" class="text-muted small mb-3"></div>
+
+  <div class="row g-4">
+
+    {% for item in hospital_list %}
+    {% with hospital=item.hospital %}
+    <div class="col-md-4">
+      <div class="card hospital-card h-100 shadow-sm position-relative">
+        {% if hospital.photo %}
+          <img src="{{ hospital.photo.url }}" class="hospital-img" alt="{{ hospital.name }}">
+        {% else %}
+          <div class="hospital-img d-flex align-items-center justify-content-center" style="background: #eef4ff;">
+            <i class="fa-solid fa-hospital" style="font-size: 60px; color: #0d6efd;"></i>
+          </div>
+        {% endif %}
+
+        {% if item.distance_km %}
+          <span class="badge bg-danger position-absolute top-0 start-0 m-2">
+            <i class="fa-solid fa-route me-1"></i> {{ item.distance_km }} km away
+          </span>
+        {% endif %}
+
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h5 class="fw-bold mb-0">{{ hospital.name }}</h5>
+          </div>
+          <p class="text-muted small mb-3"><i class="fa-solid fa-location-dot me-1"></i> {{ hospital.address }}</p>
+
+          <div class="mb-3">
+            {% if hospital.has_emergency %}
+              <span class="facility-icon"><i class="fa-solid fa-truck-medical"></i> Emergency</span>
+            {% endif %}
+            {% if hospital.is_open_24_7 %}
+              <span class="facility-icon"><i class="fa-solid fa-clock"></i> Open 24/7</span>
+            {% endif %}
+          </div>
+
+          <div class="d-grid gap-2">
+            <a href="{% url 'doctors' %}?hospital={{ hospital.id }}" class="btn btn-primary rounded-pill">
+              View Available Doctors
+            </a>
+            <a href="tel:{{ hospital.phone }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+              <i class="fa-solid fa-phone me-1"></i> Call Hospital
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endwith %}
+    {% empty %}
+    <div class="col-12 text-center py-5">
+      <p class="text-muted">No hospitals found{% if emergency_only %} with emergency service{% endif %}.</p>
+    </div>
+    {% endfor %}
+
+  </div>
+</main>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('use-location-btn').addEventListener('click', function () {
+    const statusDiv = document.getElementById('location-status');
+
+    if (!navigator.geolocation) {
+        statusDiv.textContent = "Geolocation is not supported by your browser.";
+        return;
+    }
+
+    statusDiv.textContent = "Detecting your location...";
+
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const params = new URLSearchParams(window.location.search);
+            params.set('lat', lat);
+            params.set('lng', lng);
+            window.location.search = params.toString();
+        },
+        function () {
+            statusDiv.textContent = "Could not get your location. Please allow location access.";
+        }
+    );
+});
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+ .about-hero {
+      background-size: cover;
+      background-position: center;
+      color: black;
+      padding: 10px;
+    }
+
+    /* Info Cards */
+    .info-card {
+      border: none;
+      border-radius: 15px;
+      transition: 0.3s;
+    }
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .icon-box {
+      width: 60px;
+      height: 60px;
+      background: #e7f1ff;
+      color: var(--primary-blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    /* Stats Section */
+    .stats-section {
+      background-color: var(--primary-blue);
+      color: white;
+      padding: 60px 0;
+    }

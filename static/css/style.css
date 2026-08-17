@@ -1,0 +1,146 @@
+.hero {
+ 
+  background-image: url('../images/online-marketing-hIgeoQjS_iE-unsplash.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 100px 0;
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+  height: 80vh;
+  display: flex;
+  align-items: center;
+}
+.emergency-banner {
+      background-color: #ff4d4d;
+      color: white;
+      padding: 40px;
+      border-radius: 20px;
+      margin-top: -50px; /* Overlap effect */
+      box-shadow: 0 10px 20px rgba(255, 77, 77, 0.3);
+    }
+.specialty-card {
+  text-align: center;
+  border-radius: 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.specialty-card:hover {
+  transform: translateY(-10px);
+  background-color: #ffffff;
+  box-shadow: 0 15px 30px rgba(13, 110, 253, 0.1) !important;
+}
+
+.specialty-icon-circle {
+  width: 70px;
+  height: 70px;
+  background-color: #f0f7ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: #0d6efd;
+  transition: 0.3s;
+}
+
+.specialty-card:hover .specialty-icon-circle {
+  background-color: #0d6efd;
+  color: #ffffff;
+}
+.doctor-card {
+      background: white;
+      border: none;
+      border-radius: 25px;
+      transition: all 0.4s ease;
+      overflow: hidden;
+    }
+    .doctor-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+    .doctor-img-container {
+      position: relative;
+      padding: 15px;
+    }
+    .doctor-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 20px;
+    }
+    .availability-badge {
+      position: absolute;
+      bottom: 25px;
+      right: 25px;
+      background: #28a745;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      border: 3px solid white;
+    }
+
+    /* Fee & Action Section */
+    .fee-section {
+      background: #f8fbff;
+      border-radius: 0 0 25px 25px;
+      padding: 15px 20px;
+    }
+    .price-tag {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #0d6efd;
+    }
+    .btn-book {
+      border-radius: 12px;
+      padding: 10px 25px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2);
+    }
+
+    .specialty-tag {
+      background: #eef4ff;
+      color: #0d6efd;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+:root { --primary-blue: #0d6efd; }
+       .about-hero {
+      background-size: cover;
+      background-position: center;
+      color: black;
+      padding: 10px;
+    }
+
+    /* Info Cards */
+    .info-card {
+      border: none;
+      border-radius: 15px;
+      transition: 0.3s;
+    }
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .icon-box {
+      width: 60px;
+      height: 60px;
+      background: #e7f1ff;
+      color: var(--primary-blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    
+    .stats-section {
+      background-color: var(--primary-blue);
+      color: white;
+      padding: 60px 0;
+    }

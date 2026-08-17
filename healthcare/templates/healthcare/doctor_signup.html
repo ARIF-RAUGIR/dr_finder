@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Doctor Sign Up{% endblock %}
+{% block extra_css %}
+{% comment %} <link rel="stylesheet" href="{% static 'css/doctor_signup.css' %}"> {% endcomment %}
+{% endblock %}
+
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow p-4">
+
+        <div class="text-center mb-4">
+          <h3 class="fw-bold text-primary">Dr.Finder</h3>
+          <p class="text-muted">Register as a Doctor</p>
+        </div>
+
+        {% if error %}
+          <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+        <form method="post">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <select name="title" class="form-select" required>
+              <option value="">Select Title</option>
+              <option value="Dr.">Dr.</option>
+              <option value="Prof. Dr.">Prof. Dr.</option>
+              <option value="Asst. Prof. Dr.">Asst. Prof. Dr.</option>
+              <option value="Assoc. Prof. Dr.">Assoc. Prof. Dr.</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" name="full_name" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" name="phone" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Speciality</label>
+            <select name="speciality" class="form-select" required>
+              <option>Select Speciality</option>
+              
+              {% for s in specialities %}
+                <option value="{{ s.id }}">{{ s.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Hospital</label>
+            <select name="hospital" class="form-select" required>
+              <option value="">Select Hospital</option>
+              {% for h in hospitals %}
+              <option value="{{ h.id }}">{{ h.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Qualification</label>
+            <input type="text" name="qualification" class="form-control"
+                   placeholder="e.g. MBBS, FCPS" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">BMDC Registration Number</label>
+            <input type="text" name="bmdc_number" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password1" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="password2" class="form-control" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 mb-3">Sign Up</button>
+
+          <p class="text-center mb-0">
+            Already have an account?
+            <a href="{% url 'doctor_login' %}" class="text-decoration-none">Login</a>
+          </p>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Patient Medical History{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+
+      <div class="card shadow p-4 mb-4">
+        <div class="d-flex align-items-center gap-3">
+          {% if patient.photo %}
+            <img src="{{ patient.photo.url }}" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+          {% else %}
+            <i class="fa-solid fa-circle-user" style="font-size: 60px; color: #ccc;"></i>
+          {% endif %}
+          <div>
+            <h5 class="fw-bold mb-0">{{ patient.user.get_full_name }}</h5>
+            <p class="text-muted small mb-0">{{ patient.phone }} &middot; {{ patient.gender|default:"N/A" }} &middot; DOB: {{ patient.date_of_birth|default:"N/A" }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card shadow p-4">
+        <h5 class="fw-bold mb-3">Medical History</h5>
+
+        {% for report in medical_reports %}
+          <div class="border-bottom pb-3 mb-3">
+            <div class="d-flex justify-content-between">
+              <strong>{{ report.doctor.title }} {{ report.doctor.user.get_full_name }}</strong>
+              <span class="text-muted small">{{ report.created_at|date:"d M Y" }}</span>
+            </div>
+            <p class="text-muted small mb-1">{{ report.doctor.speciality.name }}</p>
+            <p class="mb-1"><strong>Diagnosis:</strong> {{ report.diagnosis }}</p>
+            <p class="mb-1"><strong>Medicines:</strong></p>
+            <p class="text-muted small" style="white-space: pre-line;">{{ report.prescription }}</p>
+            {% if report.notes %}
+              <p class="text-muted small mb-0"><strong>Notes:</strong> {{ report.notes }}</p>
+            {% endif %}
+          </div>
+        {% empty %}
+          <p class="text-muted">No medical history found for this patient.</p>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

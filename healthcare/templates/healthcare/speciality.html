@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Medical Specialties{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/specialties.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<section class="specialty-header">
+  <div class="container">
+    <h1 class="fw-bold">Medical Specialties</h1>
+    <p class="lead opacity-75">Find the right specialist based on your health concerns</p>
+  </div>
+</section>
+
+<div class="container mt-n4">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form method="get">
+        <div class="input-group shadow-sm rounded-pill overflow-hidden bg-white p-1">
+          <input type="text" name="q" class="form-control border-0 px-4"
+                 placeholder="Search for a specialty (e.g. Skin, Heart)..." value="{{ search_query|default:'' }}">
+          <button type="submit" class="btn btn-primary rounded-pill px-4">Search</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<main class="container my-5 pb-5">
+  <div class="row g-4">
+
+    {% for speciality in specialities %}
+    <div class="col-lg-3 col-md-4 col-sm-6">
+      <a href="{% url 'doctors' %}?speciality={{ speciality.id }}" class="specialty-card shadow-sm">
+        <div class="icon-wrapper"><i class="fa-solid {{ speciality.icon }}"></i></div>
+        <h5 class="specialty-name">{{ speciality.name }}</h5>
+        <small class="text-muted d-block mb-1">{{ speciality.description }}</small>
+        <span class="doctor-count-badge">{{ speciality.doctor_count }} Doctors</span>
+      </a>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+      <p class="text-muted">No specialties found.</p>
+    </div>
+    {% endfor %}
+
+  </div>
+</main>
+
+{% endblock %}

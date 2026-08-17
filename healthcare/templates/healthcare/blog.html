@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Health Blog{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/blog.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container my-5 pb-5">
+    <div class="row g-4">
+        {% for blog in blogs %}
+        <div class="col-lg-4 col-md-6">
+            <article class="blog-card shadow-sm h-100">
+                {% if blog.image %}
+                    <img src="{{ blog.image.url }}" class="card-img-top blog-img" alt="{{ blog.title }}">
+                {% else %}
+                    <img src="https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top blog-img" alt="{{ blog.title }}">
+                {% endif %}
+                <div class="card-body p-4">
+                    <span class="category-tag">{{ blog.category }}</span>
+                    <h5 class="fw-bold my-2">{{ blog.title }}</h5>
+                    <p class="text-muted small">{{ blog.short_description }}</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-secondary"><i class="fa-regular fa-clock me-1"></i> {{ blog.published_date|date:"M d, Y" }}</small>
+                        <a href="{% url 'blog_detail' blog.slug %}" class="read-more text-decoration-none fw-bold">Read More <i class="fa-solid fa-arrow-right small"></i></a>
+                    </div>
+                </div>
+            </article>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted">No blog posts yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+    <nav class="mt-5 mb-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled"><a class="page-link shadow-none rounded-start-pill" href="#">Previous</a></li>
+            <li class="page-item active"><a class="page-link shadow-none" href="#">1</a></li>
+            <li class="page-item"><a class="page-link shadow-none" href="#">2</a></li>
+            <li class="page-item"><a class="page-link shadow-none rounded-end-pill" href="#">Next</a></li>
+        </ul>
+    </nav>
+
+    <hr class="my-5 opacity-25">
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="sidebar-card shadow-sm p-4 bg-white rounded-4 h-100">
+                <h5 class="fw-bold mb-3"><i class="fa-solid fa-magnifying-glass me-2 text-primary"></i> Search Blog</h5>
+                <div class="input-group">
+                    <input type="text" class="form-control shadow-none border-primary-subtle" placeholder="Search topics, news, or tips...">
+                    <button class="btn btn-primary px-4">Search</button>
+                </div>
+            </div>
+        </div>
+       
+
+        <div class="col-md-6">
+            <div class="sidebar-card shadow-sm p-4 bg-white rounded-4 h-100">
+                <h5 class="fw-bold mb-3"><i class="fa-solid fa-tags me-2 text-primary"></i> Popular Categories</h5>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="#" class="badge bg-light text-dark p-2 px-3 border text-decoration-none">Heart Health</a>
+                    <a href="#" class="badge bg-light text-dark p-2 px-3 border text-decoration-none">Skin Care</a>
+                    <a href="#" class="badge bg-light text-dark p-2 px-3 border text-decoration-none">Diabetes</a>
+                    <a href="#" class="badge bg-light text-dark p-2 px-3 border text-decoration-none">Child Care</a>
+                    <a href="#" class="badge bg-light text-dark p-2 px-3 border text-decoration-none">Mental Health</a>
+                    <a href="#" class="badge bg-light text-dark p-2 px-3 border text-decoration-none">Nutrition</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="sidebar-card shadow-sm bg-primary text-white p-4 rounded-4 text-center">
+                <h3 class="fw-bold">Need Personal Medical Advice?</h3>
+                <p class="opacity-75">Our expert doctors are available for online and offline consultations.</p>
+                <a href="{% url 'doctors' %}" class="btn btn-light fw-bold px-5 rounded-pill shadow-sm">Find & Book a Doctor Now</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

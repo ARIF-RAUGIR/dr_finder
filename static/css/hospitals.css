@@ -1,0 +1,55 @@
+.hospital-header {
+      background: linear-gradient(rgba(13, 110, 253, 0.85), rgba(13, 110, 253, 0.85)), 
+                  url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=1200');
+      background-size: cover;
+      background-position: center;
+      padding: 80px 0;
+      color: white;
+      text-align: center;
+      border-bottom-left-radius: 50px;
+      border-bottom-right-radius: 50px;
+    }
+
+    .search-box-wrap {
+      max-width: 600px;
+      margin: -35px auto 0;
+      background: white;
+      padding: 10px;
+      border-radius: 50px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+
+    /* Hospital Card Styling */
+    .hospital-card {
+      border: none;
+      border-radius: 20px;
+      transition: 0.3s;
+      overflow: hidden;
+      background: white;
+    }
+    .hospital-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    .hospital-img {
+      height: 180px;
+      object-fit: cover;
+      width: 100%;
+    }
+    .badge-emergency {
+      background-color: #ffe5e5;
+      color: #d9534f;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .hospital-info {
+      padding: 20px;
+    }
+    .location-text {
+      font-size: 0.85rem;
+      color: #6c757d;
+    }
+    .btn-view {
+      border-radius: 10px;
+      font-weight: 600;
+    }

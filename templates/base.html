@@ -1,0 +1,411 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Dr.Finder{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+      body {
+        background-color: #f0f4f8;
+      }
+
+      .footer-vertical-links {
+        list-style: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+      }
+
+      .footer-vertical-links li {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 12px !important;
+        float: none !important;
+        clear: both !important;
+      }
+
+      .footer-vertical-links li a {
+        color: #adb5bd !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+        transition: 0.3s;
+      }
+
+      .footer-vertical-links li a:hover {
+        color: #0d6efd !important;
+        transform: translateX(5px);
+      }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"> 
+    {% block extra_css %}
+    {% endblock %}
+  </head>
+  <body>
+    <nav
+      class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm"
+      style="background-color: #0d6efd"
+    >
+      <div class="container">
+        <a class="navbar-brand fw-bold text-white" href="{% url "home" %}">
+          <i class="fa-solid fa-house-medical"></i> Dr.Finder
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav align-items-center">
+        <li class="nav-item"><a class="nav-link text-white px-lg-3" href="{% url "home" %}">Home</a></li>
+        <li class="nav-item"><a class="nav-link text-white px-lg-3" href="{% url "doctors" %}">Doctors</a></li>
+        <li class="nav-item"><a class="nav-link text-white px-lg-3" href="{% url "hospitals" %}">Hospitals</a></li>
+        <li class="nav-item"><a class="nav-link text-white px-lg-3" href="{% url "speciality" %}">Speciality</a></li>
+        <li class="nav-item"><a class="nav-link text-white px-lg-3" href="{% url "blog" %}">Blog</a></li>
+        <li class="nav-item"><a class="nav-link text-white px-lg-3" href="{% url "about" %}">About Us</a></li>
+
+        {% if user.is_authenticated %}
+            <li class="nav-item ms-lg-3">
+              <div class="dropdown">
+                <button
+                  class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                >
+                  {% comment %} {% if user.patient_profile.photo %}
+                    <img src="{{ user.patient_profile.photo.url }}" alt="Profile"
+                         class="rounded-circle" style="width: 28px; height: 28px; object-fit: cover;">
+                  {% elif user.doctor_profile.photo %}
+                    <img src="{{ user.doctor_profile.photo.url }}" alt="Profile"
+                         class="rounded-circle" style="width: 28px; height: 28px; object-fit: cover;">               
+                  {% else %}
+                    <i class="fa-solid fa-circle-user fs-4"></i>
+                  {% endif %} {% endcomment %}
+                  {{ user.get_full_name|default:user.username }}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow">
+                  <li class="px-3 py-2 d-flex align-items-center gap-2">
+                    {% if user.patient_profile.photo %}
+                      <img src="{{ user.patient_profile.photo.url }}" alt="Profile"
+                           class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                    {% elif user.doctor_profile.photo %}
+                      <img src="{{ user.doctor_profile.photo.url }}" alt="Profile"
+                           class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                    
+                    {% else %}
+                      <i class="fa-solid fa-circle-user fs-2 text-secondary"></i>
+                    {% endif %}
+                    <span class="fw-semibold">{{ user.get_full_name|default:user.username }}</span>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    {% if user.patient_profile %}
+                      <a class="dropdown-item" href="{% url 'patient_profile' %}">
+                        <i class="fa-solid fa-id-card me-2"></i> View Profile
+                      </a>
+                    {% else %}
+                      <a class="dropdown-item" href="{% url 'doctor_profile' %}">
+                        <i class="fa-solid fa-id-card me-2"></i> View Profile
+                        </a>
+                    {% endif %}
+                  
+                  </li>
+                  <li>
+                    {% if user.patient_profile %}
+                      <a class="dropdown-item" href="{% url 'patient_logout' %}">
+                        <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                      </a>
+                    {% else %}
+                      <a class="dropdown-item" href="{% url 'doctor_logout' %}">
+                        <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                      </a>
+                    {% endif %}
+                  </li> 
+                </ul>
+              </div>
+            </li>
+
+            {% else %}
+            <li class="nav-item ms-lg-3">
+              <div class="dropdown">
+                <button
+                  class="btn btn-outline-light dropdown-toggle"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                >
+                  Login
+                </button>
+                <ul class="dropdown-menu shadow">
+                  <li>
+                    <a class="dropdown-item" href="{% url 'patient_login' %}"
+                      ><i class="fa-solid fa-user-injured me-2"></i> Patient</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'doctor_login' %}"
+                      ><i class="fa-solid fa-user-md me-2"></i> Doctor</a
+                    >
+                  </li>
+                </ul>
+                </div>
+                </li>
+                {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    {% if messages %}
+  <div class="toast-container position-fixed end-0 p-3" style="top: 80px; z-index: 1080;">
+    {% for message in messages %}
+      <div class="toast align-items-center text-white bg-{{ message.tags }} border-0 show"
+           role="alert" data-bs-delay="2000" data-bs-autohide="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            {{ message }}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                  data-bs-dismiss="toast"></button>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+    
+    {% block content %}
+
+    {% endblock %}
+
+ 
+    <footer class="bg-dark text-white pt-5 pb-3">
+      <div class="container">
+        <div class="row g-4">
+          <div class="col-lg-4 col-md-12">
+            <h4 class="fw-bold text-primary mb-3">
+              <i class="fa-solid fa-house-medical"></i> Dr.Finder
+            </h4>
+            <p class="text-secondary small">
+              Providing the most reliable medical expert search and booking
+              platform in Bangladesh. Your health is our priority.
+            </p>
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-sm-6">
+            <h6 class="fw-bold mb-4 text-white">Quick Links</h6>
+            <ul class="footer-vertical-links">
+              <li><a href="{% url 'doctors' %}">Doctors</a></li>
+              <li><a href="{% url 'hospitals' %}">Hospitals</a></li>
+              <li><a href="{% url 'speciality' %}">Speciality</a></li>
+               <li><a href="{% url 'blog' %}">Blog</a></li>
+              <li><a href="{% url 'about' %}">About Us</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-sm-6">
+            <h6 class="fw-bold mb-4 text-white">Our Services</h6>
+            <ul class="footer-vertical-links">
+              <li><a href="#">Online Booking</a></li>
+              <li><a href="#">Emergency Care</a></li>
+              <li><a href="#">Health Tips</a></li>
+              <li><a href="#">Support</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <h6 class="fw-bold mb-4 text-white">Contact Us</h6>
+            <p class="text-secondary mb-2">
+              <i class="fa-solid fa-location-dot me-2"></i> Level 4, Health
+              Tower, Panthapath, Dhaka
+            </p>
+            <p class="text-secondary mb-2">
+              <i class="fa-solid fa-envelope me-2"></i> support@drfinder.com
+            </p>
+            <p class="text-secondary mb-2">
+              <i class="fa-solid fa-phone me-2"></i> +880 1700 000000
+            </p>
+          </div>
+        </div>
+        <hr class="mt-5 mb-4 border-secondary" />
+        <div class="text-center">
+          <p class="text-secondary small mb-0">
+            &copy; 2026 Dr.Finder | Developed by Arif Raugir
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const toastElements = document.querySelectorAll('.toast');
+    toastElements.forEach(function (toastEl) {
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    });
+});
+
+
+</script>
+
+<button id="chat-toggle-btn" title="Chat with us">
+  <i class="fa-solid fa-comment-medical"></i>
+</button>
+
+<div id="chat-window" class="d-none">
+  <div id="chat-header">
+    <span><i class="fa-solid fa-robot me-2"></i>Health Assistant</span>
+    <span id="chat-close-btn" style="cursor:pointer;">&times;</span>
+  </div>
+
+  <div id="chat-body">
+    <div class="chat-msg bot">
+      Hi! I'm your health assistant. Ask me about symptoms, general health tips, or how to find a doctor. This is general information, not medical advice.
+    </div>
+  </div>
+
+  <div id="chat-input-area">
+    <input type="text" id="chat-input" placeholder="Type your question...">
+    <button id="chat-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+  </div>
+</div>
+
+<style>
+  #chat-toggle-btn {
+    position: fixed; bottom: 24px; right: 24px; z-index: 1050;
+    width: 58px; height: 58px; border-radius: 50%;
+    background: #0d6efd; color: #fff; border: none;
+    font-size: 22px; box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    cursor: pointer; transition: transform 0.2s ease;
+  }
+  #chat-toggle-btn:hover { transform: scale(1.08); }
+
+  #chat-window {
+    position: fixed; bottom: 95px; right: 24px; z-index: 1050;
+    width: 340px; max-width: 90vw; height: 460px;
+    background: #fff; border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  #chat-header {
+    background: #0d6efd; color: #fff; padding: 12px 16px;
+    font-weight: 600; display: flex; justify-content: space-between; align-items: center;
+  }
+
+  #chat-body {
+    flex: 1; padding: 14px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 10px;
+    background: #f7f9fc;
+  }
+
+  .chat-msg {
+    max-width: 80%; padding: 9px 13px; border-radius: 12px;
+    font-size: 14px; line-height: 1.4; white-space: pre-wrap;
+  }
+  .chat-msg.user {
+    align-self: flex-end; background: #0d6efd; color: #fff; border-bottom-right-radius: 2px;
+  }
+  .chat-msg.bot {
+    align-self: flex-start; background: #e9ecef; color: #212529; border-bottom-left-radius: 2px;
+  }
+
+  #chat-input-area {
+    display: flex; border-top: 1px solid #eee; padding: 8px;
+  }
+  #chat-input {
+    flex: 1; border: none; outline: none; padding: 8px 10px; font-size: 14px;
+  }
+  #chat-send-btn {
+    border: none; background: #0d6efd; color: #fff; width: 38px; border-radius: 8px; margin-left: 6px;
+  }
+</style>
+
+<script>
+(function () {
+  const toggleBtn = document.getElementById('chat-toggle-btn');
+  const closeBtn = document.getElementById('chat-close-btn');
+  const chatWindow = document.getElementById('chat-window');
+  const chatBody = document.getElementById('chat-body');
+  const chatInput = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('chat-send-btn');
+
+  toggleBtn.addEventListener('click', () => chatWindow.classList.toggle('d-none'));
+  closeBtn.addEventListener('click', () => chatWindow.classList.add('d-none'));
+
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  function addMessage(text, sender) {
+    const div = document.createElement('div');
+    div.className = `chat-msg ${sender}`;
+    div.textContent = text;
+    chatBody.appendChild(div);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    addMessage(message, 'user');
+    chatInput.value = '';
+    sendBtn.disabled = true;
+
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'chat-msg bot';
+    loadingDiv.id = 'chat-loading';
+    loadingDiv.textContent = 'Typing...';
+    chatBody.appendChild(loadingDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    fetch("{% url 'chat_api' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken'),
+      },
+      body: JSON.stringify({ message: message }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('chat-loading').remove();
+        if (data.reply) {
+          addMessage(data.reply, 'bot');
+        } else {
+          addMessage("Sorry, something went wrong. Please try again.", 'bot');
+        }
+      })
+      .catch(() => {
+        document.getElementById('chat-loading').remove();
+        addMessage("Sorry, something went wrong. Please try again.", 'bot');
+      })
+      .finally(() => { sendBtn.disabled = false; });
+  }
+
+  sendBtn.addEventListener('click', sendMessage);
+  chatInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') sendMessage();
+  });
+})();
+</script>
+  </body>
+</html>

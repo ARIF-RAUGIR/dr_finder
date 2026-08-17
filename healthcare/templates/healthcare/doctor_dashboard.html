@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Doctor Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/doctor_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+
+    <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse px-0 shadow">
+      <div class="p-3 text-center border-bottom">
+        <h4 class="fw-bold"><i class="fa-solid fa-user-doctor me-2"></i> Dr. Panel</h4>
+      </div>
+      <div class="nav flex-column mt-3">
+        <a class="nav-link active" href="{% url 'doctor_dashboard' %}"><i class="fa-solid fa-house me-2"></i> Dashboard</a>
+        <a class="nav-link" href="{% url 'doctor_all_appointments' %}"><i class="fa-solid fa-calendar-days me-2"></i> Appointments</a>
+        <a class="nav-link" href="{% url 'doctor_patients' %}"><i class="fa-solid fa-users me-2"></i> My Patients</a>
+        <a class="nav-link" href="{% url 'doctor_profile' %}"><i class="fa-solid fa-id-card me-2"></i> Update Profile</a>
+        <hr class="mx-3">
+        <a class="nav-link text-warning" href="{% url 'doctor_logout' %}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
+      </div>
+    </nav>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+          <h2 class="fw-bold text-dark">Hello, {{ doctor.title }} {{ doctor.user.get_full_name }}</h2>
+          {% if doctor.is_verified %}
+            <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> BMDC VERIFIED</span>
+          {% else %}
+            <span class="verified-badge pending"><i class="fa-solid fa-clock"></i> VERIFICATION PENDING</span>
+          {% endif %}
+        </div>
+        <div class="text-end">
+          <p class="mb-0 text-muted">Current Status:</p>
+          {% if doctor.available_today %}
+            <span class="badge bg-success">Online / Accepting Patients</span>
+          {% else %}
+            <span class="badge bg-secondary">Not Available Today</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="row g-4 mb-5">
+        <div class="col-md-3">
+          <div class="card stat-card p-3">
+            <h6 class="text-muted small text-uppercase">Today's Patients</h6>
+            <h2 class="fw-bold">{{ todays_patient_count }}</h2>
+            <div class="text-muted small">Scheduled for today</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card p-3">
+            <h6 class="text-muted small text-uppercase">Pending Requests</h6>
+            <h2 class="fw-bold text-warning">{{ pending_count }}</h2>
+            <div class="text-muted small">Waiting for approval</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card p-3">
+            <h6 class="text-muted small text-uppercase">This Month's Earnings</h6>
+            <h2 class="fw-bold text-primary">৳ {{ this_month_earnings }}</h2>
+            <div class="text-muted small">From completed visits</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card p-3">
+            <h6 class="text-muted small text-uppercase">Overall Rating</h6>
+            <h2 class="fw-bold text-warning">{{ doctor.rating }} <i class="fa-solid fa-star fs-5"></i></h2>
+            <div class="text-muted small">From {{ doctor.review_count }}+ patients</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 fw-bold">Today's Appointments Schedule</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="bg-light">
+                <tr>
+                  <th class="ps-4">Patient Details</th>
+                  <th>Age/Gender</th>
+                  <th>Time Slot</th>
+                  <th>Reason</th>
+                  <th>Free</th>
+                  <th class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in todays_appointments %}
+                <tr>
+                  <td class="ps-4">
+                    <div class="fw-bold">{{ item.appointment.patient.user.get_full_name }}</div>
+                    <div class="small text-muted">ID: #PT-{{ item.appointment.patient.id }}</div>
+                  </td>
+                  <td>{{ item.age }} / {{ item.appointment.patient.gender|default:"N/A" }}</td>
+                  <td>{{ item.appointment.appointment_time }}</td>
+                  <td class="small text-muted">{{ item.appointment.reason|default:"—"|truncatechars:30 }}</td>
+                  <td><span class="text-success fw-bold">৳ {{ item.appointment.doctor.consultation_fee }}</span></td>
+                  <td class="text-center">
+                    {% if item.appointment.status == 'pending' %}
+                      <a href="{% url 'update_appointment_status' item.appointment.id 'rejected' %}" class="btn btn-sm btn-outline-danger me-1">Cancel</a>
+                      <a href="{% url 'update_appointment_status' item.appointment.id 'accepted' %}" class="btn btn-sm btn-success">Approve</a>
+                    {% elif item.appointment.status == 'accepted' %}
+                      <a href="{% url 'medical_report' item.appointment.id %}" class="btn btn-sm btn-prescription">
+                        <i class="fa-solid fa-file-prescription me-1"></i> Prescription
+                      </a>
+                    {% elif item.appointment.status == 'completed' %}
+                      <span class="badge bg-primary">Completed</span>
+                    {% elif item.appointment.status == 'rejected' %}
+                      <span class="badge bg-danger">Rejected</span>
+                    {% endif %}
+                    <a href="{% url 'view_patient_history' item.appointment.patient.id %}" class="btn btn-sm btn-light border">
+                      <i class="fa-solid fa-ellipsis"></i>
+                    </a>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="6" class="text-center text-muted py-4">No appointments scheduled for today.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer bg-white text-center py-3">
+          <a href="{% url 'doctor_all_appointments' %}" class="text-decoration-none">View All Appointments</a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+{% endblock %}

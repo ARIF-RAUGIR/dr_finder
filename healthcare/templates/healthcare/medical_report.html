@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Add Medical Report{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <div class="card shadow p-4">
+
+        <div class="mb-4">
+          <h4 class="fw-bold">Add Medical Report</h4>
+          <p class="text-muted mb-0">Patient: {{ appointment.patient.user.get_full_name }}</p>
+          <p class="text-muted small">Appointment Date: {{ appointment.appointment_date }}</p>
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label">Diagnosis</label>
+            <textarea name="diagnosis" class="form-control" rows="3" required
+                      placeholder="e.g. Acute bronchitis"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Prescribed Medicines</label>
+            <textarea name="prescribed_medicines" class="form-control" rows="4" required
+                      placeholder="e.g.&#10;1. Napa 500mg - 1 tablet twice daily for 5 days&#10;2. Amoxicillin 250mg - 1 capsule 3 times daily for 7 days"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Additional Notes (optional)</label>
+            <textarea name="notes" class="form-control" rows="2"
+                      placeholder="Follow-up instructions, lifestyle advice, etc."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Save Report & Mark Completed</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

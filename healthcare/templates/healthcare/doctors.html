@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Find Doctors{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/doctors.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<section class="search-hero text-center">
+  <div class="container">
+    <h2 class="fw-bold mb-3">Find & Book Top Specialists</h2>
+    <p class="opacity-75">More than 500+ verified doctors available for you</p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="search-container">
+        <form method="get">
+          <div class="row g-2">
+            <div class="col-md-4">
+              <div class="input-group">
+                <span class="input-group-text bg-transparent border-0"><i class="fa-solid fa-stethoscope text-primary"></i></span>
+                <select name="speciality" class="form-select border-0 shadow-none">
+                  <option value="">Select Speciality</option>
+                  {% for s in specialities %}
+                    <option value="{{ s.id }}" {% if s.id|stringformat:"s" == selected_speciality %}selected{% endif %}>
+                      {{ s.name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4 border-start">
+              <div class="input-group">
+                <span class="input-group-text bg-transparent border-0"><i class="fa-solid fa-location-dot text-primary"></i></span>
+                <input type="text" name="location" id="location-input" class="form-control border-0 shadow-none"
+                       placeholder="Enter Location (e.g. Dhanmondi)" value="{{ selected_location|default:'' }}">
+                <span class="input-group-text bg-transparent border-0" id="use-my-location-btn" style="cursor: pointer;" title="Use My Current Location">
+                  <i class="fa-solid fa-location-crosshairs text-primary"></i>
+                </span>
+              </div>
+              <input type="hidden" name="lat" id="lat-field">
+              <input type="hidden" name="lng" id="lng-field">
+            </div>
+            <div class="col-md-4 d-grid">
+              <button type="submit" class="btn btn-primary btn-lg rounded-pill px-4">Search Now</button>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<main class="container my-5 pt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold">Available Specialists</h4>
+    <div class="small text-muted">Showing {{ doctors|length }} of {{ total_count }} Doctors</div>
+  </div>
+
+  <div class="row g-4">
+
+    {% for item in doctor_list %}
+      {% with doctor=item.doctor %}
+    <div class="col-lg-4 col-md-6">
+      <div class="card doctor-card shadow-sm h-100">
+        <div class="doctor-img-container">
+          {% if doctor.photo %}
+            <img src="{{ doctor.photo.url }}" class="doctor-img" alt="Doctor">
+          {% else %}
+            <div class="doctor-img d-flex align-items-center justify-content-center" style="background: #eef4ff;">
+            <i class="fa-solid fa-user-doctor" style="font-size: 60px; color: #0d6efd;"></i>
+            </div>
+          {% endif %}
+
+          {% if doctor.is_available_today %}
+            <span class="availability-badge">Available Today</span>
+          {% else %}
+            <span class="availability-badge" style="background: #ffc107; color: #000;">Not Available Today</span>
+          {% endif %}
+        </div>
+        <div class="card-body pt-0 px-4">
+          <div class="mb-2">
+            <span class="specialty-tag">{{ doctor.speciality.name }}</span>
+          </div>
+          {% if item.distance_km %}
+            <span class="badge bg-primary">{{ item.distance_km }} km away</span>
+          {% endif %}
+          <h5 class="fw-bold mb-1">{{ doctor.title }} {{ doctor.user.get_full_name }}</h5>
+          <p class="text-muted small mb-3">{{ doctor.qualification }}</p>
+
+          <div class="d-flex align-items-center mb-3">
+            <div class="text-warning me-2">
+              <i class="fa-solid fa-star"></i> {{ doctor.rating }}
+            </div>
+            <span class="text-muted small border-start ps-2">{{ doctor.review_count }}+ Happy Patients</span>
+          </div>
+
+          <p class="small text-secondary"><i class="fa-solid fa-hospital me-1"></i> {{ doctor.hospital.name }}, {{ doctor.hospital.address }}</p>
+        </div>
+
+        <div class="fee-section d-flex justify-content-between align-items-center border-top">
+          <div>
+            <small class="text-muted d-block">Consultation Fee</small>
+            <span class="price-tag">৳ {{ doctor.consultation_fee }}</span>
+          </div>
+          <a href="{% url 'book_appointment' doctor.id %}">
+            <button class="btn btn-primary btn-book">Book Now</button>
+          </a>
+        </div>
+      </div>
+    </div>
+      {% endwith %}
+    {% empty %}
+    <div class="col-12 text-center py-5">
+      <p class="text-muted">No doctors found matching your search.</p>
+    </div>
+    {% endfor %}
+
+
+
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('use-my-location-btn').addEventListener('click', function () {
+    if (!navigator.geolocation) {
+        alert('Geolocation not supported by your browser.');
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            document.getElementById('lat-field').value = position.coords.latitude;
+            document.getElementById('lng-field').value = position.coords.longitude;
+            document.getElementById('location-input').value = 'Current Location';
+            document.getElementById('location-input').disabled = true;
+        },
+        function () {
+            alert('Could not get your location. Please allow location access.');
+        }
+    );
+});
+</script>
+{% endblock %}
