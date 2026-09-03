@@ -50,7 +50,7 @@
   <div class="col-md-4">
     <div class="input-group">
       <input type="text" name="location" id="location-input" class="form-control" placeholder="location (Dhaka, Sylhet.....)">
-      <button type="button" id="use-my-location-btn" class="btn btn-outline-primary" title="Use My Current Location">
+      <button type="button" id="use-location-btn" class="btn btn-outline-primary" title="Use My Current Location">
         <i class="fa-solid fa-location-crosshairs"></i>
       </button>
       <input type="hidden" name="lat" id="lat-field">
@@ -489,7 +489,7 @@
 {% endblock %}
 {% block extra_js %}
 <script>
-document.getElementById('use-my-location-btn').addEventListener('click', function () {
+document.getElementById('use-location-btn').addEventListener('click', function () {
     if (!navigator.geolocation) {
         alert('Geolocation not supported by your browser.');
         return;

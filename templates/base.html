@@ -335,6 +335,48 @@ document.addEventListener('DOMContentLoaded', function () {
     border: none; background: #0d6efd; color: #fff; width: 38px; border-radius: 8px; margin-left: 6px;
   }
 </style>
+<script>
+document.getElementById('use-location-btn').addEventListener('click', function () {
+    if (!navigator.geolocation) {
+        alert('Geolocation not supported by your browser.');
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            document.getElementById('lat-field').value = position.coords.latitude;
+            document.getElementById('lng-field').value = position.coords.longitude;
+            document.getElementById('location-input').value = 'Current Location';
+            document.getElementById('location-input').disabled = true;
+        },
+        function () {
+            alert('Could not get your location. Please allow location access.');
+        }
+    );
+});
+</script> 
+<script>
+document.getElementById('use-location-btn').addEventListener('click', function () {
+    const statusDiv = document.getElementById('location-status');
+
+    if (!navigator.geolocation) {
+        statusDiv.textContent = "Geolocation is not supported by your browser.";
+        return;
+    }
+
+    statusDiv.textContent = "Detecting your location...";
+
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            window.location.href = `?lat=${lat}&lng=${lng}`;
+        },
+        function () {
+            statusDiv.textContent = "Could not get your location. Please allow location access.";
+        }
+    );
+});
+</script>
 
 <script>
 (function () {
@@ -407,5 +449,6 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 })();
 </script>
+
   </body>
 </html>

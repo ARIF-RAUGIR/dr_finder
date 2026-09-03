@@ -39,7 +39,7 @@
                 <span class="input-group-text bg-transparent border-0"><i class="fa-solid fa-location-dot text-primary"></i></span>
                 <input type="text" name="location" id="location-input" class="form-control border-0 shadow-none"
                        placeholder="Enter Location (e.g. Dhanmondi)" value="{{ selected_location|default:'' }}">
-                <span class="input-group-text bg-transparent border-0" id="use-my-location-btn" style="cursor: pointer;" title="Use My Current Location">
+                <span class="input-group-text bg-transparent border-0" id="use-location-btn" style="cursor: pointer;" title="Use My Current Location">
                   <i class="fa-solid fa-location-crosshairs text-primary"></i>
                 </span>
               </div>
@@ -130,7 +130,7 @@
 
 {% block extra_js %}
 <script>
-document.getElementById('use-my-location-btn').addEventListener('click', function () {
+document.getElementById('use-location-btn').addEventListener('click', function () {
     if (!navigator.geolocation) {
         alert('Geolocation not supported by your browser.');
         return;
@@ -147,5 +147,48 @@ document.getElementById('use-my-location-btn').addEventListener('click', functio
         }
     );
 });
-</script>
+</script> 
+{% comment %} <script>
+document.getElementById('use-my-location-btn').addEventListener('click', function () {
+    const icon = this.querySelector('i');
+    const locationInput = document.getElementById('location-input');
+    const latField = document.getElementById('lat-field');
+    const lngField = document.getElementById('lng-field');
+
+    if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        return;
+    }
+
+    icon.classList.remove('fa-location-crosshairs');
+    icon.classList.add('fa-spinner', 'fa-spin');
+
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            latField.value = lat;
+            lngField.value = lng;
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                .then(res => res.json())
+                .then(data => {
+                    const addr = data.address || {};
+                    const area = addr.suburb || addr.city_district || addr.city || addr.town || addr.state || "";
+                    locationInput.value = area;
+                })
+                .finally(() => {
+                    icon.classList.remove('fa-spinner', 'fa-spin');
+                    icon.classList.add('fa-location-crosshairs');
+                });
+        },
+        function () {
+            alert("Could not get your location. Please allow location access.");
+            icon.classList.remove('fa-spinner', 'fa-spin');
+            icon.classList.add('fa-location-crosshairs');
+        }
+    );
+});
+</script> {% endcomment %}
 {% endblock %}

@@ -141,10 +141,7 @@ document.getElementById('use-location-btn').addEventListener('click', function (
         function (position) {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
-            const params = new URLSearchParams(window.location.search);
-            params.set('lat', lat);
-            params.set('lng', lng);
-            window.location.search = params.toString();
+            window.location.href = `?lat=${lat}&lng=${lng}`;
         },
         function () {
             statusDiv.textContent = "Could not get your location. Please allow location access.";
